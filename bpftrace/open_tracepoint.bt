@@ -1,0 +1,9 @@
+#!/usr/local/bin/bpftrace
+BEGIN
+{ 
+  printf("Tracing all 'open' events. Ctrl-C to stop.\n\n");
+}
+tracepoint:syscalls:sys_enter_openat 
+{ 
+	printf("%s > %s (%d) is opening a file %s\n", strftime("%H:%M:%S.%f", nsecs), comm, uid,str(args->filename)); 
+}
