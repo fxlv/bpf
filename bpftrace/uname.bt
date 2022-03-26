@@ -1,0 +1,24 @@
+#!//usr/local/bin/bpftrace 
+
+
+
+struct old_utsname {
+        char sysname[65];
+        char nodename[65];
+        char release[65];
+        char version[65];
+        char machine[65];
+};
+
+
+uprobe:/lib/x86_64-linux-gnu/libc.so.6:uname 
+{ 
+
+  $sysname = ((struct old_utsname *)arg0)->sysname;
+  $nodename = ((struct old_utsname *)arg0)->nodename;
+  printf("%s (%d) -> %s :: %s %s\n", comm, uid, probe, $sysname, $nodename ); 
+}
+uretprobe:/lib/x86_64-linux-gnu/libc.so.6:uname 
+{ 
+  printf("%s (%d) -> %s :: Retrurn:%d \n", comm, uid, probe, retval); 
+}
