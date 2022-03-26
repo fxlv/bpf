@@ -1,0 +1,7 @@
+#!/usr/bin/env bpftrace
+
+tracepoint:syscalls:sys_enter_openat 
+{ 
+  @opens[comm] = count();
+  //@openhist = hist(comm);
+}
