@@ -1,0 +1,18 @@
+#!/usr/local/bin/bpftrace
+
+BEGIN 
+{
+    if (str($1) == "") {
+        printf("Please specify the command for which you want to monitor the events.\n");
+        exit();
+    } else {
+        printf("Tracing all 'do_sys_open' by '%s'\n",str($1));
+        printf("Ctrl-C to end.\n");
+    }
+}
+kprobe:do_sys_open / comm == str($1) /
+{ 
+    printf("%s (%d) is opening file: '%s' with flags %x and mode %x\n", comm, pid, str(arg1), arg2, arg3); 
+}
+
+
